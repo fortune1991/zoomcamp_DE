@@ -1,0 +1,26 @@
+# version: '3.8' # Optional - defaults to latest version
+
+services:
+  pg-database: # Defines a service named 'pg-database'
+    image: postgres:13 # Uses the Postgres v13 image from Docker Hub
+    environment: # Sets environment variables within the container
+      POSTGRES_DB: ny_taxi
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432" # Maps host port 5432 to container port 5432
+    # networks: Optional. Can specify manually created network,but docker-compose will auto-create a new network otherwise
+      # - pg-network # Connects the 'pg-database' service to the 'pg-network'
+    volumes: 
+      - ${PWD}/ny_taxi_postgres_data:/var/lib/postgresql/data
+
+  pg-admin: # Defines a service named 'pg-admin'
+    image: dpage/pgadmin4 # Uses the pgadmin image from the pg-admin website
+    environment: # Sets environment variables within the container
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "8080:80" # Maps host port 8080 to container port 80
+    # networks: Optional. Can specify manually created network,but docker-compose will auto-create a new network otherwise
+      # - pg-network # Connects the 'pg-database' service to the 'pg-network'
+

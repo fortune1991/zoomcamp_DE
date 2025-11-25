@@ -1,0 +1,3 @@
+Activate projects conda environment: useconda, conda activate docker_sql 
+
+Connect to database: pgcli -h localhost -p 5432 -u root -d ny_taxi
