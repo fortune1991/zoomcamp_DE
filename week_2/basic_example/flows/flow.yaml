@@ -1,0 +1,33 @@
+id: sunrise_message
+namespace: training
+
+tasks:
+  - id: get_sunrise
+    type: io.kestra.plugin.scripts.python.Commands
+    commands:
+      - python scripts/sunrise.py
+    namespaceFiles:
+      enabled: true
+    beforeCommands:
+      - python3 -m venv .venv
+      - . .venv/bin/activate
+      - pip install -r scripts/requirements.txt
+  - id: sunrise_output
+    type: io.kestra.plugin.core.log.Log
+    message: "{{ outputs.get_sunrise.vars.sunrise_message }}"
+  - id: send_sunrise
+    type: io.kestra.plugin.scripts.python.Commands
+    commands:
+      - python scripts/message.py "{{ outputs.get_sunrise.vars.sunrise_message }}"
+    namespaceFiles:
+      enabled: true
+    beforeCommands:
+      - python3 -m venv .venv
+      - . .venv/bin/activate
+      - pip install -r scripts/requirements.txt
+
+triggers:
+  - id: hourly
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "* * * * *"
+    disabled: true
