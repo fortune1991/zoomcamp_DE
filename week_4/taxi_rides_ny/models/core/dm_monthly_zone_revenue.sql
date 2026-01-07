@@ -5,7 +5,7 @@
 select
     -- Grouping dimensions
     coalesce(pickup_zone, 'Unknown Zone') as pickup_zone,
-    date_trunc('month', pickup_datetime) as revenue_month,  -- Truncate to first day of month
+    {{ dbt.date_trunc('month', 'pickup_datetime') }} as revenue_month,  -- Truncate to first day of month
     service_type,
 
     -- Revenue breakdown (summed by zone, month, and service type)
@@ -19,9 +19,9 @@ select
     sum(total_amount) as revenue_monthly_total_amount,
 
     -- Additional metrics for operational analysis
-    count(trip_id) as total_monthly_trips,
+    count(tripid) as total_monthly_trips,
     avg(passenger_count) as avg_monthly_passenger_count,
     avg(trip_distance) as avg_monthly_trip_distance
 
-from {{ ref('fct_trips') }}
+from {{ ref('fact_trips') }}
 group by pickup_zone, revenue_month, service_type
